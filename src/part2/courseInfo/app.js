@@ -1,5 +1,4 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React,{useState} from 'react';
 import Course from './course.js';
 
 
