@@ -1,6 +1,6 @@
 import React,{useState} from 'react';
 import ReactDom from 'react-dom';
-import App from './part1/part1D/ex2Anecdotes/app.js'
+import App from './part2/courseInfo/app.js'
 
 
 
