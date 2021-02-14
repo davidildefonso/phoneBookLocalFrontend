@@ -1,8 +1,9 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import Title from './title.js';
 import  Contents from './contents.js';
 import Form from './form.js';
 import Filter from './filter.js';
+import axios from 'axios'
 
 const contacts=[
   {
@@ -31,16 +32,27 @@ const contacts=[
 
 const App=()=>{
 
-  const [theContacts,setContacs] = useState(contacts);
+  const [theContacts,setContacs] = useState([]);
 
-  const [filteredContacts,setFilteredContacs] = useState(contacts);
+  useEffect(() => { 
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {       
+        setContacs(response.data)
+          })
+    }, [])
 
-  const [change,setChange] = useState("");   
+  console.log(theContacts)
+
+  const [filteredContacts,setFilteredContacs] = useState(theContacts);
+
+  const [change,setChange] = useState("new");   
 
   const [newContact,setNewContact] = 
     useState({name:"  new  name...",
             phone: " new phone number.."});
  
+  
   
 
   const addContact=(e)=>{

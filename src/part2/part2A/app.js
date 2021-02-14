@@ -1,34 +1,15 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import Title from './title.js';
 import  Contents from './contents.js';
 import Form from './form.js';
+import axios from 'axios'
 
 
-const notes=[
-  {
-    id:1,
-    content:"HTMl is easu",
-    date:+new Date(),
-    important: true
-  },
-  {
-    id:2,
-    content:"browser can execute only js",
-    date:+new Date(),
-    important: false
-  },
-  {
-    id:3,
-    content:"GET ad POST are the most important metgods of HTTP",
-    date:+new Date(),
-    important: true
-  }
-];
 
 
 const App=()=>{
 
-  const [theNotes,setNotes] = useState(notes);
+  const [theNotes,setNotes] = useState([]);
 
   const [newNote,setNewNote] = useState("a new note...");
 
@@ -38,7 +19,15 @@ const App=()=>{
     note=> note.important
   );
 
-  
+
+  useEffect(()=>{   
+    axios
+      .get("http://localhost:3001/notes")
+      .then(response=>{        
+        setNotes(response.data);
+      })
+  },[]);
+
 
   const addNote=(e)=>{
     e.preventDefault();
