@@ -32,8 +32,8 @@ const Content=({name,
   
   useEffect(() => { 
       axios
-        .get('http://api.openweathermap.org/data/2.5/weather?q='+capital+'&APPID=b86a2530c04b348fcc546a243749e846')
-        .then(response => {       
+        .get('http://api.openweathermap.org/data/2.5/weather?q='+capital+'&APPID='+process.env.REACT_APP_API_KEY) // b86a2530c04b348fcc546a243749e846
+        .then(response => {                                                                                     // process.env.REACT_APP_API_KEY
           setWeather(response.data)
             })
       }, [])
