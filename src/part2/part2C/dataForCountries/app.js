@@ -11,6 +11,10 @@ import  Contents from './contents.js';
 const App=()=>{
 
   const [theCountries,setCountries] = useState([]);
+  const [showCountryDetails,setShow] = useState(false);
+  const [countrySelectedByButton,setSelected] = useState("");
+  const [weather,setWeather] = useState({});
+  
 
   useEffect(() => { 
     axios
@@ -21,6 +25,8 @@ const App=()=>{
     }, [])
 
 
+  
+ 
 
   const [filteredCountries,setFilteredCountries] = useState(theCountries);
   const [inputValue,setInputValue] = useState("");
@@ -37,7 +43,7 @@ const App=()=>{
         setFilteredCountries([]);
     }
      
-    
+    setShow(false);
     
     
       
@@ -45,6 +51,11 @@ const App=()=>{
   };
 
   
+  const toogleShow=(e)=>{
+    setShow(!showCountryDetails);
+    
+    setSelected(e.target.previousSibling.textContent)
+  }
  
 
   return (
@@ -56,7 +67,15 @@ const App=()=>{
               
       ></Filter>
 
-     <Contents countries={filteredCountries} inputValue={inputValue} ></Contents>
+     <Contents countries={filteredCountries} 
+                inputValue={inputValue}
+                showCountryDetails={showCountryDetails}
+                countrySelectedByButton={countrySelectedByButton}
+                handleButtonClick={toogleShow}
+                weather={weather}
+                
+                
+                 ></Contents>
 
     </div>
     
