@@ -2,13 +2,18 @@ import React,{useState} from 'react';
 import Content from './content.js';
 import Button from './button.js'
 
-const Contents=({notes,showAll,handleShowAllBtnClick})=>{
+const Contents=({notes,showAll,
+  handleShowAllBtnClick,
+  toggleImportanceOf})=>{
 
 
-  console.log(notes)
+  
   
   const listItems= notes.map((item)=>  
-     <Content text={item.content} key={item.id}></Content>
+     <Content text={item.content}
+      handleClick={()=>toggleImportanceOf(item.id)}
+      buttonLabel={item.important?"make not important":"make important"}
+      key={item.id}></Content>
   
     
   );

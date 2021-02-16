@@ -3,7 +3,7 @@ import Title from './title.js';
 import  Contents from './contents.js';
 import Form from './form.js';
 import axios from 'axios'
-
+import noteService from '../../services/notes.js'
 
 
 
@@ -21,10 +21,10 @@ const App=()=>{
 
 
   useEffect(()=>{   
-    axios
-      .get("http://localhost:3001/notes")
-      .then(response=>{        
-        setNotes(response.data);
+    noteService
+      .getAll()
+      .then(initialNotes=>{        
+        setNotes(initialNotes);
       })
   },[]);
 
@@ -39,16 +39,20 @@ const App=()=>{
   
 
     const theNewNote={
-      id: max+1,
+     
       content: newNote,
       date:new Date().toISOString(),
       important: Math.random()<0.5
     }
    
+    noteService
+      .create(theNewNote)
+      .then(returnedNote=>{
+        setNotes(theNotes.concat(returnedNote));
+        setNewNote("");
+      })
 
-    setNotes(theNotes.concat(theNewNote));
-    setNewNote("");
-    console.log(theNotes)
+    
     
   };
 
@@ -61,11 +65,30 @@ const App=()=>{
     setShowAll(!showAll)
   }
 
+
+  const toggleImportanceOf=(id)=>{
+    
+    const note= theNotes.find(n=>n.id===id);
+    const changedNote = {...note,important:!note.important};
+
+    noteService
+      .update(id,changedNote)
+      .then(returnedNote=>{
+        console.log(returnedNote)
+        setNotes(theNotes.map(note=>note.id!==id?note:returnedNote))
+      })
+      .catch(error=>{
+        alert(        `the note '${note.content}' was already deleted from server`)
+        setNotes(theNotes.filter(n=>n.id!==id))
+      })
+  };
+
   return (
     <div>
       <Title text="Notes"></Title>
       <Contents notes={notesToShow} showAll={showAll}
-        handleShowAllBtnClick={handleClick} ></Contents>
+        handleShowAllBtnClick={handleClick}
+        toggleImportanceOf={toggleImportanceOf}></Contents>
       <Form handleSubmit={addNote} handleInput={newNote}
         handleNoteChange={handleNoteChange}></Form>
     </div>
