@@ -2,13 +2,15 @@ import React,{useState} from 'react';
 import Content from './content.js';
 
 
-const Contents=({contacts})=>{
+const Contents=({contacts,handleClick})=>{
 
   
   const listItems= contacts.map((item)=>  
      <Content name={item.name} 
-              phone={item.phone}
-              key={item.id}></Content>
+              phone={item.number}
+              key={item.id}
+              handleClick={()=>handleClick(item.id,item.name)}
+              ></Content>
   
     
   );

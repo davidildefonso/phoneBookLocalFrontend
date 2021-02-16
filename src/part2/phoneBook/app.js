@@ -3,31 +3,9 @@ import Title from './title.js';
 import  Contents from './contents.js';
 import Form from './form.js';
 import Filter from './filter.js';
-import axios from 'axios'
+import axios from 'axios';
+import contactService from '../../services/contacts.js'
 
-const contacts=[
-  {
-    id:1,
-    name:"david",
-    phone:"9897979"
-  },
-  {
-    id:2,
-    name:"mama",
-    phone:"9797979"
-  },
-  {
-    id:3,
-    name:"daniel",
-    phone:"129897979"
-  }
-  ,
-  {
-    id:4,
-    name:"sebas",
-    phone:"9989646"
-  }
-]
 
 
 const App=()=>{
@@ -35,14 +13,16 @@ const App=()=>{
   const [theContacts,setContacs] = useState([]);
 
   useEffect(() => { 
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {       
-        setContacs(response.data)
+    contactService
+      .getAll()
+      .then(initialContacts => {   
+            
+        setContacs(initialContacts)
+        
           })
     }, [])
 
-  console.log(theContacts)
+  
 
   const [filteredContacts,setFilteredContacs] = useState(theContacts);
 
@@ -50,42 +30,90 @@ const App=()=>{
 
   const [newContact,setNewContact] = 
     useState({name:"  new  name...",
-            phone: " new phone number.."});
+            number: " new phone number.."});
  
   
   
 
   const addContact=(e)=>{
     e.preventDefault();
-    const cpContacts=[...theContacts];
-    const max= cpContacts.reduce((a,b)=>{
-      if(a.id>b.id) return a.id;
-      else return  b.id;
-    });
-  
+      
 
     const theNewContact={
-      id: max+1,
+      
       name: newContact.name,
-      phone: newContact.phone
+      number: newContact.number
    
     }
    
-    const includesNewName= (n)=>n.name===theNewContact.name;
+    
 
-    if(theContacts.some(includesNewName)){
-      alert(`${theNewContact.name} is already added to the phonebook ` )
+    contactService
+      .getAll()
+      .then(allContacts=>{
+        return allContacts.find(c=>c.name===theNewContact.name)
+      })
+      .then(exists=>{
+        if(exists){
+          
+          if(exists.number===theNewContact.number){
+            alert(`${theNewContact.name} is already added to the phonebook ` )
+          }else{
+            if(window.confirm(theNewContact.name +" is already added to phonebook, replace old number with a new one? ")){
+              const existingCtc= theContacts
+                .filter(c=>c.name===theNewContact.name)[0];
+              
+              
+              contactService
+                .update(existingCtc.id,theNewContact)
+                .then(returnedContact=>{
+                           
+                setContacs(theContacts.map(c=>c.id!==existingCtc.id?c:returnedContact))
+              })              
+            }
+              
+            
+          }
+          
+        }else{
+          contactService
+            .create(theNewContact)
+            .then(returnedContact=>{
+              setContacs(theContacts.concat(returnedContact));
+              setNewContact({name:"",number:""}); 
+              setChange("new");
+            })
+        }
+      })
       
-    }else{
-      setContacs(theContacts.concat(theNewContact));
-      
-      setNewContact({name:"",phone:""}); 
-      setChange("new");
-    }
 
-       
+        
+      
+
     
   };
+
+
+  const deleteContact=(id,name)=>{
+
+    if(window.confirm(`delete ${name}?`)){
+     
+      contactService
+        .remove(id)
+        .then(respData=>{          
+          const theContactsCopy=[...theContacts];
+          const idx=theContactsCopy.findIndex(c=>c.name===name);
+          theContactsCopy.splice(idx,1);
+          setContacs(theContactsCopy);
+        })
+    }
+
+    
+  }
+
+
+
+
 
   const handleContactNameChange= e=>{   
    
@@ -96,7 +124,7 @@ const App=()=>{
   
   const handleContactPhoneChange= e=>{
     
-    setNewContact({...newContact,phone: e.target.value});
+    setNewContact({...newContact,number: e.target.value});
   }
 
   const filter=e=>{
@@ -122,6 +150,7 @@ const App=()=>{
     contactList=[...filteredContacts];
   }
 
+  
  
 
   return (
@@ -136,14 +165,14 @@ const App=()=>{
 
       <Form handleSubmit={addContact}    
         nameInputValue={newContact.name}
-         phoneInputValue={newContact.phone}
+         phoneInputValue={newContact.number}
         handleContactNameChange={handleContactNameChange}
         handleContactPhoneChange={handleContactPhoneChange}
         
        >
       </Form>
 
-      <Contents contacts={contactList}  ></Contents>
+      <Contents contacts={contactList} handleClick={deleteContact} ></Contents>
 
     </div>
     

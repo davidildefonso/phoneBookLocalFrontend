@@ -1,9 +1,14 @@
 import React,{useState} from 'react';
 
-const Content=({name,phone})=>{
+const Content=({name,phone,handleClick})=>{
   return (
-    <p >Name: {name}, Phone: {phone}</p>
+    <div>
+        <p >Name: {name}, Phone: {phone}</p>
+        <button onClick={handleClick}>Delete</button>
+    </div>
   )
+   
+  
 }
 
 export default Content;
