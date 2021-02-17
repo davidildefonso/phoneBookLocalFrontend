@@ -2,6 +2,7 @@ import React,{useState,useEffect} from 'react';
 import Title from './title.js';
 import  Contents from './contents.js';
 import Form from './form.js';
+import Footer from './footer.js';
 import axios from 'axios'
 import noteService from '../../services/notes.js'
 
@@ -86,11 +87,12 @@ const App=()=>{
   return (
     <div>
       <Title text="Notes"></Title>
+      <Form handleSubmit={addNote} handleInput={newNote}
+        handleNoteChange={handleNoteChange}></Form>
       <Contents notes={notesToShow} showAll={showAll}
         handleShowAllBtnClick={handleClick}
         toggleImportanceOf={toggleImportanceOf}></Contents>
-      <Form handleSubmit={addNote} handleInput={newNote}
-        handleNoteChange={handleNoteChange}></Form>
+      <Footer></Footer>
     </div>
   )
 }

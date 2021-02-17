@@ -2,7 +2,7 @@ import React,{useState} from 'react';
 
 const Form=({handleSubmit,handleInput,handleNoteChange})=>{
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="form" onSubmit={handleSubmit}>
       <input value={handleInput}
         onChange={handleNoteChange}></input>
       <button type="submit">Save</button>

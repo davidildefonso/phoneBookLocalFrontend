@@ -5,7 +5,7 @@ import Form from './form.js';
 import Filter from './filter.js';
 import axios from 'axios';
 import contactService from '../../services/contacts.js'
-
+import AddNotification from "./addNotification.js";
 
 
 const App=()=>{
@@ -32,7 +32,7 @@ const App=()=>{
     useState({name:"  new  name...",
             number: " new phone number.."});
  
-  
+  const [addCtcMessage, setCtcMessage] = useState(null)
   
 
   const addContact=(e)=>{
@@ -69,6 +69,10 @@ const App=()=>{
                 .then(returnedContact=>{
                            
                 setContacs(theContacts.map(c=>c.id!==existingCtc.id?c:returnedContact))
+                setCtcMessage("Number updated");
+                setTimeout(() => {
+                  setCtcMessage(null);
+                }, 3000);
               })              
             }
               
@@ -82,6 +86,10 @@ const App=()=>{
               setContacs(theContacts.concat(returnedContact));
               setNewContact({name:"",number:""}); 
               setChange("new");
+              setCtcMessage("New Contact Added");
+              setTimeout(() => {
+                setCtcMessage(null);
+              }, 3000);
             })
         }
       })
@@ -171,7 +179,7 @@ const App=()=>{
         
        >
       </Form>
-
+      <AddNotification message={addCtcMessage}></AddNotification>
       <Contents contacts={contactList} handleClick={deleteContact} ></Contents>
 
     </div>
