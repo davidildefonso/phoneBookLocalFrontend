@@ -70,8 +70,10 @@ const App=()=>{
   const toggleImportanceOf=(id)=>{
     
     const note= theNotes.find(n=>n.id===id);
+    console.log(note)
     const changedNote = {...note,important:!note.important};
-
+    console.log(changedNote)
+    console.log(id)
     noteService
       .update(id,changedNote)
       .then(returnedNote=>{
@@ -79,6 +81,7 @@ const App=()=>{
         setNotes(theNotes.map(note=>note.id!==id?note:returnedNote))
       })
       .catch(error=>{
+        
         alert(        `the note '${note.content}' was already deleted from server`)
         setNotes(theNotes.filter(n=>n.id!==id))
       })
