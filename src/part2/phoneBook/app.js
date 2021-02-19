@@ -53,29 +53,27 @@ const App=()=>{
       .then(allContacts=>{
         return allContacts.find(c=>c.name===theNewContact.name)
       })
-      .then(exists=>{
-        if(exists){
-          
-          if(exists.number===theNewContact.number){
+      .then(existingCtc=>{
+        if(existingCtc){
+          console.log(existingCtc)
+          if(existingCtc.number===theNewContact.number){
             alert(`${theNewContact.name} is already added to the phonebook ` )
           }else{
             if(window.confirm(theNewContact.name +" is already added to phonebook, replace old number with a new one? ")){
-              const existingCtc= theContacts
-                .filter(c=>c.name===theNewContact.name)[0];
-              
               
               contactService
                 .update(existingCtc.id,theNewContact)
                 .then(returnedContact=>{
-                           
-                setContacs(theContacts.map(c=>c.id!==existingCtc.id?c:returnedContact))
+                console.log(returnedContact)
+                console.log(existingCtc)          
+                setContacs(theContacts.map(c=>c.name!==existingCtc.name?c:returnedContact))
                 setCtcMessage("Number updated");
                 setTimeout(() => {
                   setCtcMessage(null);
                 }, 3000);
               })              
             }
-              
+             console.log(theContacts) 
             
           }
           
@@ -107,13 +105,24 @@ const App=()=>{
     if(window.confirm(`delete ${name}?`)){
      
       contactService
-        .remove(id)
+      .getAll()
+      .then(allContacts=>{
+        return allContacts.find(c=>c.name===name)
+      })
+      .then(existingCtc=>{
+        contactService
+        .remove(existingCtc.id)
         .then(respData=>{          
           const theContactsCopy=[...theContacts];
           const idx=theContactsCopy.findIndex(c=>c.name===name);
           theContactsCopy.splice(idx,1);
           setContacs(theContactsCopy);
         })
+      })
+
+
+
+      
     }
 
     
